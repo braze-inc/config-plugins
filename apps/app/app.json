@@ -14,6 +14,12 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "facebookAdvertiserIDCollectionEnabled": false,
+    "facebookAppId": "4812712715480611",
+    "facebookAutoInitEnabled": true,
+    "facebookAutoLogAppEventsEnabled": true,
+    "facebookDisplayName": "RN SDK Demo",
+    "facebookScheme": "fb4812712715480611",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "dev.bacon.app"
@@ -84,7 +90,8 @@
             "./assets/stickers/teapot.png"
           ]
         }
-      ]
+      ],
+      ["@config-plugins/react-native-fbsdk"]
     ]
   }
 }

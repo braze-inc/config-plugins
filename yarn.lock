@@ -14768,6 +14768,11 @@ react-native-dynamic-app-icon@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-dynamic-app-icon/-/react-native-dynamic-app-icon-1.1.0.tgz#c7722289f9705c24fea257c9722f8d976a14cd13"
   integrity sha512-NJFQNelgA/VZfw2ZbMErUrIFv+DxV8lTX7ZEkU8ys+oZE2yA9EDNZp9KmeAufKZ4VvtFlRuyaR6OHAEfM7CNaw==
 
+react-native-fbsdk-next@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-fbsdk-next/-/react-native-fbsdk-next-7.0.0.tgz#4938d96b0fbebe7a4bc19c03f6157c251aafc58b"
+  integrity sha512-QoiVU8eGtdtV86ux+Q3psn0RaqUrnqoaCx5JoCP+hnNiT8KRTyx1wJY8a3PlzHNaWw5tJEOBFizIeXvPs2oYkA==
+
 react-native-google-cast@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/react-native-google-cast/-/react-native-google-cast-4.1.2.tgz#8a2b83849034029665f49fb36222c2439abb6c12"
