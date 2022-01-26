@@ -1,27 +1,28 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setFacebookConfig = exports.getFacebookAdvertiserIDCollection = exports.getFacebookAutoLogAppEvents = exports.getFacebookAutoInitEnabled = exports.getFacebookDisplayName = exports.getFacebookAppId = exports.getFacebookScheme = exports.withFacebookManifest = exports.withFacebookAppIdString = void 0;
+exports.setFacebookConfig = exports.withFacebookManifest = exports.withFacebookAppIdString = void 0;
 const config_plugins_1 = require("@expo/config-plugins");
+const config_1 = require("./config");
 const { buildResourceItem } = config_plugins_1.AndroidConfig.Resources;
 const { removeStringItem, setStringItem } = config_plugins_1.AndroidConfig.Strings;
 const { addMetaDataItemToMainApplication, getMainApplicationOrThrow, prefixAndroidKeys, removeMetaDataItemFromMainApplication, } = config_plugins_1.AndroidConfig.Manifest;
-const CUSTOM_TAB_ACTIVITY = 'com.facebook.CustomTabActivity';
-const STRING_FACEBOOK_APP_ID = 'facebook_app_id';
-const META_APP_ID = 'com.facebook.sdk.ApplicationId';
-const META_APP_NAME = 'com.facebook.sdk.ApplicationName';
-const META_AUTO_INIT = 'com.facebook.sdk.AutoInitEnabled';
-const META_AUTO_LOG_APP_EVENTS = 'com.facebook.sdk.AutoLogAppEventsEnabled';
-const META_AD_ID_COLLECTION = 'com.facebook.sdk.AdvertiserIDCollectionEnabled';
-const withFacebookAppIdString = (config) => {
+const CUSTOM_TAB_ACTIVITY = "com.facebook.CustomTabActivity";
+const STRING_FACEBOOK_APP_ID = "facebook_app_id";
+const META_APP_ID = "com.facebook.sdk.ApplicationId";
+const META_APP_NAME = "com.facebook.sdk.ApplicationName";
+const META_AUTO_INIT = "com.facebook.sdk.AutoInitEnabled";
+const META_AUTO_LOG_APP_EVENTS = "com.facebook.sdk.AutoLogAppEventsEnabled";
+const META_AD_ID_COLLECTION = "com.facebook.sdk.AdvertiserIDCollectionEnabled";
+const withFacebookAppIdString = (config, props) => {
     return config_plugins_1.withStringsXml(config, (config) => {
-        config.modResults = applyFacebookAppIdString(config, config.modResults);
+        config.modResults = applyFacebookAppIdString(props, config.modResults);
         return config;
     });
 };
 exports.withFacebookAppIdString = withFacebookAppIdString;
-const withFacebookManifest = (config) => {
+const withFacebookManifest = (config, props) => {
     return config_plugins_1.withAndroidManifest(config, (config) => {
-        config.modResults = setFacebookConfig(config, config.modResults);
+        config.modResults = setFacebookConfig(props, config.modResults);
         return config;
     });
 };
@@ -30,7 +31,7 @@ function buildXMLItem({ head, children, }) {
     return { ...(children !== null && children !== void 0 ? children : {}), $: head };
 }
 function buildAndroidItem(datum) {
-    const item = typeof datum === 'string' ? { name: datum } : datum;
+    const item = typeof datum === "string" ? { name: datum } : datum;
     const head = prefixAndroidKeys(item);
     return buildXMLItem({ head });
 }
@@ -50,15 +51,15 @@ function getFacebookSchemeActivity(scheme) {
     return buildXMLItem({
         head: prefixAndroidKeys({
             name: CUSTOM_TAB_ACTIVITY,
-            exported: 'true',
+            exported: "true",
         }),
         children: {
-            'intent-filter': [
+            "intent-filter": [
                 {
-                    action: [buildAndroidItem('android.intent.action.VIEW')],
+                    action: [buildAndroidItem("android.intent.action.VIEW")],
                     category: [
-                        buildAndroidItem('android.intent.category.DEFAULT'),
-                        buildAndroidItem('android.intent.category.BROWSABLE'),
+                        buildAndroidItem("android.intent.category.DEFAULT"),
+                        buildAndroidItem("android.intent.category.BROWSABLE"),
                     ],
                     data: [buildAndroidItem({ scheme })],
                 },
@@ -66,42 +67,12 @@ function getFacebookSchemeActivity(scheme) {
         },
     });
 }
-function getFacebookScheme(config) {
-    var _a;
-    return (_a = config.facebookScheme) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookScheme = getFacebookScheme;
-function getFacebookAppId(config) {
-    var _a;
-    return (_a = config.facebookAppId) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAppId = getFacebookAppId;
-function getFacebookDisplayName(config) {
-    var _a;
-    return (_a = config.facebookDisplayName) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookDisplayName = getFacebookDisplayName;
-function getFacebookAutoInitEnabled(config) {
-    var _a;
-    return (_a = config.facebookAutoInitEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAutoInitEnabled = getFacebookAutoInitEnabled;
-function getFacebookAutoLogAppEvents(config) {
-    var _a;
-    return (_a = config.facebookAutoLogAppEventsEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAutoLogAppEvents = getFacebookAutoLogAppEvents;
-function getFacebookAdvertiserIDCollection(config) {
-    var _a;
-    return (_a = config.facebookAdvertiserIDCollectionEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAdvertiserIDCollection = getFacebookAdvertiserIDCollection;
 function ensureFacebookActivity({ mainApplication, scheme, }) {
     if (Array.isArray(mainApplication.activity)) {
         // Remove all Facebook CustomTabActivities first
         mainApplication.activity = mainApplication.activity.filter((activity) => {
             var _a;
-            return ((_a = activity.$) === null || _a === void 0 ? void 0 : _a['android:name']) !== CUSTOM_TAB_ACTIVITY;
+            return ((_a = activity.$) === null || _a === void 0 ? void 0 : _a["android:name"]) !== CUSTOM_TAB_ACTIVITY;
         });
     }
     else {
@@ -113,24 +84,24 @@ function ensureFacebookActivity({ mainApplication, scheme, }) {
     }
     return mainApplication;
 }
-function applyFacebookAppIdString(config, stringsJSON) {
-    const appId = getFacebookAppId(config);
-    if (appId) {
-        return setStringItem([buildResourceItem({ name: STRING_FACEBOOK_APP_ID, value: appId })], stringsJSON);
+function applyFacebookAppIdString(props, stringsJSON) {
+    const appID = config_1.getFacebookAppId(props);
+    if (appID) {
+        return setStringItem([buildResourceItem({ name: STRING_FACEBOOK_APP_ID, value: appID })], stringsJSON);
     }
     return removeStringItem(STRING_FACEBOOK_APP_ID, stringsJSON);
 }
-function setFacebookConfig(config, androidManifest) {
-    const scheme = getFacebookScheme(config);
-    const appId = getFacebookAppId(config);
-    const displayName = getFacebookDisplayName(config);
-    const autoInitEnabled = getFacebookAutoInitEnabled(config);
-    const autoLogAppEvents = getFacebookAutoLogAppEvents(config);
-    const advertiserIdCollection = getFacebookAdvertiserIDCollection(config);
+function setFacebookConfig(props, androidManifest) {
+    const scheme = config_1.getFacebookScheme(props);
+    const appID = config_1.getFacebookAppId(props);
+    const displayName = config_1.getFacebookDisplayName(props);
+    const autoInitEnabled = config_1.getFacebookAutoInitEnabled(props);
+    const autoLogAppEvents = config_1.getFacebookAutoLogAppEvents(props);
+    const advertiserIdCollection = config_1.getFacebookAdvertiserIDCollection(props);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let mainApplication = getMainApplicationOrThrow(androidManifest);
     mainApplication = ensureFacebookActivity({ scheme, mainApplication });
-    if (appId) {
+    if (appID) {
         mainApplication = addMetaDataItemToMainApplication(mainApplication, META_APP_ID, `@string/${STRING_FACEBOOK_APP_ID}`);
     }
     else {
@@ -143,19 +114,19 @@ function setFacebookConfig(config, androidManifest) {
         mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_APP_NAME);
     }
     if (autoInitEnabled !== null) {
-        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AUTO_INIT, autoInitEnabled ? 'true' : 'false');
+        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AUTO_INIT, autoInitEnabled ? "true" : "false");
     }
     else {
         mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_AUTO_INIT);
     }
     if (autoLogAppEvents !== null) {
-        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AUTO_LOG_APP_EVENTS, autoLogAppEvents ? 'true' : 'false');
+        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AUTO_LOG_APP_EVENTS, autoLogAppEvents ? "true" : "false");
     }
     else {
         mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_AUTO_LOG_APP_EVENTS);
     }
     if (advertiserIdCollection !== null) {
-        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AD_ID_COLLECTION, advertiserIdCollection ? 'true' : 'false');
+        mainApplication = addMetaDataItemToMainApplication(mainApplication, META_AD_ID_COLLECTION, advertiserIdCollection ? "true" : "false");
     }
     else {
         // eslint-disable-next-line

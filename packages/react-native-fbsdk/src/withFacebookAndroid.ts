@@ -3,8 +3,16 @@ import {
   ConfigPlugin,
   withAndroidManifest,
   withStringsXml,
-} from '@expo/config-plugins';
-import { ExpoConfig } from '@expo/config-types';
+} from "@expo/config-plugins";
+import {
+  ConfigProps,
+  getFacebookAdvertiserIDCollection,
+  getFacebookAppId,
+  getFacebookAutoInitEnabled,
+  getFacebookAutoLogAppEvents,
+  getFacebookDisplayName,
+  getFacebookScheme,
+} from "./config";
 
 const { buildResourceItem } = AndroidConfig.Resources;
 const { removeStringItem, setStringItem } = AndroidConfig.Strings;
@@ -15,24 +23,27 @@ const {
   removeMetaDataItemFromMainApplication,
 } = AndroidConfig.Manifest;
 
-const CUSTOM_TAB_ACTIVITY = 'com.facebook.CustomTabActivity';
-const STRING_FACEBOOK_APP_ID = 'facebook_app_id';
-const META_APP_ID = 'com.facebook.sdk.ApplicationId';
-const META_APP_NAME = 'com.facebook.sdk.ApplicationName';
-const META_AUTO_INIT = 'com.facebook.sdk.AutoInitEnabled';
-const META_AUTO_LOG_APP_EVENTS = 'com.facebook.sdk.AutoLogAppEventsEnabled';
-const META_AD_ID_COLLECTION = 'com.facebook.sdk.AdvertiserIDCollectionEnabled';
+const CUSTOM_TAB_ACTIVITY = "com.facebook.CustomTabActivity";
+const STRING_FACEBOOK_APP_ID = "facebook_app_id";
+const META_APP_ID = "com.facebook.sdk.ApplicationId";
+const META_APP_NAME = "com.facebook.sdk.ApplicationName";
+const META_AUTO_INIT = "com.facebook.sdk.AutoInitEnabled";
+const META_AUTO_LOG_APP_EVENTS = "com.facebook.sdk.AutoLogAppEventsEnabled";
+const META_AD_ID_COLLECTION = "com.facebook.sdk.AdvertiserIDCollectionEnabled";
 
-export const withFacebookAppIdString: ConfigPlugin = (config) => {
+export const withFacebookAppIdString: ConfigPlugin<ConfigProps> = (
+  config,
+  props
+) => {
   return withStringsXml(config, (config) => {
-    config.modResults = applyFacebookAppIdString(config, config.modResults);
+    config.modResults = applyFacebookAppIdString(props, config.modResults);
     return config;
   });
 };
 
-export const withFacebookManifest: ConfigPlugin = (config) => {
+export const withFacebookManifest: ConfigPlugin<ConfigProps> = (config, props) => {
   return withAndroidManifest(config, (config) => {
-    config.modResults = setFacebookConfig(config, config.modResults);
+    config.modResults = setFacebookConfig(props, config.modResults);
     return config;
   });
 };
@@ -48,7 +59,7 @@ function buildXMLItem({
 }
 
 function buildAndroidItem(datum: string | Record<string, any>) {
-  const item = typeof datum === 'string' ? { name: datum } : datum;
+  const item = typeof datum === "string" ? { name: datum } : datum;
   const head = prefixAndroidKeys(item);
   return buildXMLItem({ head });
 }
@@ -69,54 +80,21 @@ function getFacebookSchemeActivity(scheme: string) {
   return buildXMLItem({
     head: prefixAndroidKeys({
       name: CUSTOM_TAB_ACTIVITY,
-      exported: 'true',
+      exported: "true",
     }),
     children: {
-      'intent-filter': [
+      "intent-filter": [
         {
-          action: [buildAndroidItem('android.intent.action.VIEW')],
+          action: [buildAndroidItem("android.intent.action.VIEW")],
           category: [
-            buildAndroidItem('android.intent.category.DEFAULT'),
-            buildAndroidItem('android.intent.category.BROWSABLE'),
+            buildAndroidItem("android.intent.category.DEFAULT"),
+            buildAndroidItem("android.intent.category.BROWSABLE"),
           ],
           data: [buildAndroidItem({ scheme })],
         },
       ],
     },
   }) as AndroidConfig.Manifest.ManifestActivity;
-}
-
-type ExpoConfigFacebook = Pick<
-  ExpoConfig,
-  | 'facebookScheme'
-  | 'facebookAdvertiserIDCollectionEnabled'
-  | 'facebookAppId'
-  | 'facebookAutoInitEnabled'
-  | 'facebookAutoLogAppEventsEnabled'
-  | 'facebookDisplayName'
->;
-
-export function getFacebookScheme(config: ExpoConfigFacebook) {
-  return config.facebookScheme ?? null;
-}
-
-export function getFacebookAppId(config: ExpoConfigFacebook) {
-  return config.facebookAppId ?? null;
-}
-
-export function getFacebookDisplayName(config: ExpoConfigFacebook) {
-  return config.facebookDisplayName ?? null;
-}
-export function getFacebookAutoInitEnabled(config: ExpoConfigFacebook) {
-  return config.facebookAutoInitEnabled ?? null;
-}
-
-export function getFacebookAutoLogAppEvents(config: ExpoConfigFacebook) {
-  return config.facebookAutoLogAppEventsEnabled ?? null;
-}
-
-export function getFacebookAdvertiserIDCollection(config: ExpoConfigFacebook) {
-  return config.facebookAdvertiserIDCollectionEnabled ?? null;
 }
 
 function ensureFacebookActivity({
@@ -129,7 +107,7 @@ function ensureFacebookActivity({
   if (Array.isArray(mainApplication.activity)) {
     // Remove all Facebook CustomTabActivities first
     mainApplication.activity = mainApplication.activity.filter((activity) => {
-      return activity.$?.['android:name'] !== CUSTOM_TAB_ACTIVITY;
+      return activity.$?.["android:name"] !== CUSTOM_TAB_ACTIVITY;
     });
   } else {
     mainApplication.activity = [];
@@ -143,65 +121,78 @@ function ensureFacebookActivity({
 }
 
 function applyFacebookAppIdString(
-  config: ExpoConfigFacebook,
+  props: ConfigProps,
   stringsJSON: AndroidConfig.Resources.ResourceXML
 ) {
-  const appId = getFacebookAppId(config);
-
-  if (appId) {
+  const appID = getFacebookAppId(props);
+  if (appID) {
     return setStringItem(
-      [buildResourceItem({ name: STRING_FACEBOOK_APP_ID, value: appId })],
+      [buildResourceItem({ name: STRING_FACEBOOK_APP_ID, value: appID })],
       stringsJSON
     );
   }
+
   return removeStringItem(STRING_FACEBOOK_APP_ID, stringsJSON);
 }
 
 export function setFacebookConfig(
-  config: ExpoConfigFacebook,
+  props: ConfigProps,
   androidManifest: AndroidConfig.Manifest.AndroidManifest
 ) {
-  const scheme = getFacebookScheme(config);
+  const scheme = getFacebookScheme(props);
 
-  const appId = getFacebookAppId(config);
-  const displayName = getFacebookDisplayName(config);
-  const autoInitEnabled = getFacebookAutoInitEnabled(config);
-  const autoLogAppEvents = getFacebookAutoLogAppEvents(config);
-  const advertiserIdCollection = getFacebookAdvertiserIDCollection(config);
+  const appID = getFacebookAppId(props);
+  const displayName = getFacebookDisplayName(props);
+  const autoInitEnabled = getFacebookAutoInitEnabled(props);
+  const autoLogAppEvents = getFacebookAutoLogAppEvents(props);
+  const advertiserIdCollection = getFacebookAdvertiserIDCollection(props);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mainApplication = getMainApplicationOrThrow(androidManifest);
 
   mainApplication = ensureFacebookActivity({ scheme, mainApplication });
 
-  if (appId) {
+  if (appID) {
     mainApplication = addMetaDataItemToMainApplication(
       mainApplication,
       META_APP_ID,
       `@string/${STRING_FACEBOOK_APP_ID}`
     );
   } else {
-    mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_APP_ID);
+    mainApplication = removeMetaDataItemFromMainApplication(
+      mainApplication,
+      META_APP_ID
+    );
   }
   if (displayName) {
-    mainApplication = addMetaDataItemToMainApplication(mainApplication, META_APP_NAME, displayName);
+    mainApplication = addMetaDataItemToMainApplication(
+      mainApplication,
+      META_APP_NAME,
+      displayName
+    );
   } else {
-    mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_APP_NAME);
+    mainApplication = removeMetaDataItemFromMainApplication(
+      mainApplication,
+      META_APP_NAME
+    );
   }
   if (autoInitEnabled !== null) {
     mainApplication = addMetaDataItemToMainApplication(
       mainApplication,
       META_AUTO_INIT,
-      autoInitEnabled ? 'true' : 'false'
+      autoInitEnabled ? "true" : "false"
     );
   } else {
-    mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_AUTO_INIT);
+    mainApplication = removeMetaDataItemFromMainApplication(
+      mainApplication,
+      META_AUTO_INIT
+    );
   }
   if (autoLogAppEvents !== null) {
     mainApplication = addMetaDataItemToMainApplication(
       mainApplication,
       META_AUTO_LOG_APP_EVENTS,
-      autoLogAppEvents ? 'true' : 'false'
+      autoLogAppEvents ? "true" : "false"
     );
   } else {
     mainApplication = removeMetaDataItemFromMainApplication(
@@ -213,11 +204,14 @@ export function setFacebookConfig(
     mainApplication = addMetaDataItemToMainApplication(
       mainApplication,
       META_AD_ID_COLLECTION,
-      advertiserIdCollection ? 'true' : 'false'
+      advertiserIdCollection ? "true" : "false"
     );
   } else {
     // eslint-disable-next-line
-    mainApplication = removeMetaDataItemFromMainApplication(mainApplication, META_AD_ID_COLLECTION);
+    mainApplication = removeMetaDataItemFromMainApplication(
+      mainApplication,
+      META_AD_ID_COLLECTION
+    );
   }
 
   return androidManifest;

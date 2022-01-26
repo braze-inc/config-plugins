@@ -14,12 +14,6 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
-    "facebookAdvertiserIDCollectionEnabled": false,
-    "facebookAppId": "4812712715480611",
-    "facebookAutoInitEnabled": true,
-    "facebookAutoLogAppEventsEnabled": true,
-    "facebookDisplayName": "RN SDK Demo",
-    "facebookScheme": "fb4812712715480611",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "dev.bacon.app"
@@ -91,7 +85,13 @@
           ]
         }
       ],
-      ["@config-plugins/react-native-fbsdk"]
+      ["@config-plugins/react-native-fbsdk", {
+        "appID": "4812712715480611",
+        "displayName": "RN SDK Demo",
+        "advertiserIDCollectionEnabled": false,
+        "autoLogAppEventsEnabled": true,
+        "isAutoInitEnabled": true
+      }]
     ]
   }
 }

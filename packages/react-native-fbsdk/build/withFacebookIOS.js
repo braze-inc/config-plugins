@@ -1,14 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withUserTrackingPermission = exports.setFacebookApplicationQuerySchemes = exports.setFacebookDisplayName = exports.setFacebookAppId = exports.setFacebookAdvertiserIDCollectionEnabled = exports.setFacebookAutoLogAppEventsEnabled = exports.setFacebookAutoInitEnabled = exports.setFacebookScheme = exports.setFacebookConfig = exports.getFacebookAdvertiserIDCollection = exports.getFacebookAutoLogAppEvents = exports.getFacebookAutoInitEnabled = exports.getFacebookDisplayName = exports.getFacebookAppId = exports.getFacebookScheme = exports.withFacebookIOS = void 0;
+exports.withUserTrackingPermission = exports.setFacebookApplicationQuerySchemes = exports.setFacebookDisplayName = exports.setFacebookAppId = exports.setFacebookAdvertiserIDCollectionEnabled = exports.setFacebookAutoLogAppEventsEnabled = exports.setFacebookAutoInitEnabled = exports.setFacebookScheme = exports.setFacebookConfig = exports.withFacebookIOS = void 0;
 const config_plugins_1 = require("@expo/config-plugins");
+const config_1 = require("./config");
 const { Scheme } = config_plugins_1.IOSConfig;
 const { appendScheme } = Scheme;
-const fbSchemes = ['fbapi', 'fb-messenger-api', 'fbauth2', 'fbshareextension'];
-const USER_TRACKING = 'This identifier will be used to deliver personalized ads to you.';
-const withFacebookIOS = (config) => {
+const fbSchemes = ["fbapi", "fb-messenger-api", "fbauth2", "fbshareextension"];
+const USER_TRACKING = "This identifier will be used to deliver personalized ads to you.";
+const withFacebookIOS = (config, props) => {
     return config_plugins_1.withInfoPlist(config, (config) => {
-        config.modResults = setFacebookConfig(config, config.modResults);
+        config.modResults = setFacebookConfig(props, config.modResults);
         return config;
     });
 };
@@ -16,39 +17,6 @@ exports.withFacebookIOS = withFacebookIOS;
 /**
  * Getters
  * TODO: these getters are the same between ios/android, we could reuse them
- */
-function getFacebookScheme(config) {
-    var _a;
-    return (_a = config.facebookScheme) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookScheme = getFacebookScheme;
-function getFacebookAppId(config) {
-    var _a;
-    return (_a = config.facebookAppId) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAppId = getFacebookAppId;
-function getFacebookDisplayName(config) {
-    var _a;
-    return (_a = config.facebookDisplayName) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookDisplayName = getFacebookDisplayName;
-function getFacebookAutoInitEnabled(config) {
-    var _a;
-    return (_a = config.facebookAutoInitEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAutoInitEnabled = getFacebookAutoInitEnabled;
-function getFacebookAutoLogAppEvents(config) {
-    var _a;
-    return (_a = config.facebookAutoLogAppEventsEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAutoLogAppEvents = getFacebookAutoLogAppEvents;
-function getFacebookAdvertiserIDCollection(config) {
-    var _a;
-    return (_a = config.facebookAdvertiserIDCollectionEnabled) !== null && _a !== void 0 ? _a : null;
-}
-exports.getFacebookAdvertiserIDCollection = getFacebookAdvertiserIDCollection;
-/**
- * Setters
  */
 function setFacebookConfig(config, infoPlist) {
     infoPlist = setFacebookAppId(config, infoPlist);
@@ -63,7 +31,7 @@ function setFacebookConfig(config, infoPlist) {
 exports.setFacebookConfig = setFacebookConfig;
 function setFacebookScheme(config, infoPlist) {
     var _a;
-    const facebookScheme = getFacebookScheme(config);
+    const facebookScheme = config_1.getFacebookScheme(config);
     if (!facebookScheme) {
         return infoPlist;
     }
@@ -74,51 +42,51 @@ function setFacebookScheme(config, infoPlist) {
 }
 exports.setFacebookScheme = setFacebookScheme;
 function setFacebookAutoInitEnabled(config, { FacebookAutoInitEnabled, ...infoPlist }) {
-    const facebookAutoInitEnabled = getFacebookAutoInitEnabled(config);
-    if (facebookAutoInitEnabled === null) {
+    const isAutoInitEnabled = config_1.getFacebookAutoInitEnabled(config);
+    if (isAutoInitEnabled === null) {
         return infoPlist;
     }
     return {
         ...infoPlist,
-        FacebookAutoInitEnabled: facebookAutoInitEnabled,
+        FacebookAutoInitEnabled: isAutoInitEnabled,
     };
 }
 exports.setFacebookAutoInitEnabled = setFacebookAutoInitEnabled;
 function setFacebookAutoLogAppEventsEnabled(config, { FacebookAutoLogAppEventsEnabled, ...infoPlist }) {
-    const facebookAutoLogAppEventsEnabled = getFacebookAutoLogAppEvents(config);
-    if (facebookAutoLogAppEventsEnabled === null) {
+    const autoLogAppEventsEnabled = config_1.getFacebookAutoLogAppEvents(config);
+    if (autoLogAppEventsEnabled === null) {
         return infoPlist;
     }
     return {
         ...infoPlist,
-        FacebookAutoLogAppEventsEnabled: facebookAutoLogAppEventsEnabled,
+        FacebookAutoLogAppEventsEnabled: autoLogAppEventsEnabled,
     };
 }
 exports.setFacebookAutoLogAppEventsEnabled = setFacebookAutoLogAppEventsEnabled;
 function setFacebookAdvertiserIDCollectionEnabled(config, { FacebookAdvertiserIDCollectionEnabled, ...infoPlist }) {
-    const facebookAdvertiserIDCollectionEnabled = getFacebookAdvertiserIDCollection(config);
-    if (facebookAdvertiserIDCollectionEnabled === null) {
+    const advertiserIDCollectionEnabled = config_1.getFacebookAdvertiserIDCollection(config);
+    if (advertiserIDCollectionEnabled === null) {
         return infoPlist;
     }
     return {
         ...infoPlist,
-        FacebookAdvertiserIDCollectionEnabled: facebookAdvertiserIDCollectionEnabled,
+        FacebookAdvertiserIDCollectionEnabled: advertiserIDCollectionEnabled,
     };
 }
 exports.setFacebookAdvertiserIDCollectionEnabled = setFacebookAdvertiserIDCollectionEnabled;
 function setFacebookAppId(config, { FacebookAppID, ...infoPlist }) {
-    const facebookAppId = getFacebookAppId(config);
-    if (facebookAppId) {
+    const appID = config_1.getFacebookAppId(config);
+    if (appID) {
         return {
             ...infoPlist,
-            FacebookAppID: facebookAppId,
+            FacebookAppID: appID,
         };
     }
     return infoPlist;
 }
 exports.setFacebookAppId = setFacebookAppId;
 function setFacebookDisplayName(config, { FacebookDisplayName, ...infoPlist }) {
-    const facebookDisplayName = getFacebookDisplayName(config);
+    const facebookDisplayName = config_1.getFacebookDisplayName(config);
     if (facebookDisplayName) {
         return {
             ...infoPlist,
@@ -129,9 +97,9 @@ function setFacebookDisplayName(config, { FacebookDisplayName, ...infoPlist }) {
 }
 exports.setFacebookDisplayName = setFacebookDisplayName;
 function setFacebookApplicationQuerySchemes(config, infoPlist) {
-    const facebookAppId = getFacebookAppId(config);
+    const facebookAppId = config_1.getFacebookAppId(config);
     const existingSchemes = infoPlist.LSApplicationQueriesSchemes || [];
-    if (facebookAppId && existingSchemes.includes('fbapi')) {
+    if (facebookAppId && existingSchemes.includes("fbapi")) {
         // already included, no need to add again
         return infoPlist;
     }
@@ -171,8 +139,8 @@ function setFacebookApplicationQuerySchemes(config, infoPlist) {
     };
 }
 exports.setFacebookApplicationQuerySchemes = setFacebookApplicationQuerySchemes;
-const withUserTrackingPermission = (config, { userTrackingPermission } = {}) => {
-    if (userTrackingPermission === false) {
+const withUserTrackingPermission = (config, { iosUserTrackingPermission } = {}) => {
+    if (iosUserTrackingPermission === false) {
         return config;
     }
     if (!config.ios)
@@ -180,7 +148,9 @@ const withUserTrackingPermission = (config, { userTrackingPermission } = {}) => 
     if (!config.ios.infoPlist)
         config.ios.infoPlist = {};
     config.ios.infoPlist.NSUserTrackingUsageDescription =
-        userTrackingPermission || config.ios.infoPlist.NSUserTrackingUsageDescription || USER_TRACKING;
+        iosUserTrackingPermission ||
+            config.ios.infoPlist.NSUserTrackingUsageDescription ||
+            USER_TRACKING;
     return config;
 };
 exports.withUserTrackingPermission = withUserTrackingPermission;
