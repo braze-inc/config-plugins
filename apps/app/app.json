@@ -66,6 +66,7 @@
         }
       ],
       "@config-plugins/detox",
+      "@config-plugins/google-signin",
       "@config-plugins/react-native-adjust",
       "@config-plugins/react-native-branch",
       "@config-plugins/react-native-google-cast",
