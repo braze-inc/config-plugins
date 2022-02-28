@@ -4,11 +4,16 @@ const config_plugins_1 = require("@expo/config-plugins");
 /**
  * Apply google-signin configuration for Expo SDK 42 projects.
  */
-const withGoogleSignin = (config, _props = {}) => {
-    // Support passing no props to the plugin.
-    const props = _props || {};
-    // Return the modified config.
-    return config;
+const withGoogleSignin = (config) => {
+    return config_plugins_1.withPlugins(config, [
+        // Android
+        config_plugins_1.AndroidConfig.GoogleServices.withClassPath,
+        config_plugins_1.AndroidConfig.GoogleServices.withApplyPlugin,
+        config_plugins_1.AndroidConfig.GoogleServices.withGoogleServicesFile,
+        // iOS
+        config_plugins_1.IOSConfig.Google.withGoogle,
+        config_plugins_1.IOSConfig.Google.withGoogleServicesFile,
+    ]);
 };
 const pkg = {
     // Prevent this plugin from being run more than once.

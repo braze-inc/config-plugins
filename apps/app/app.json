@@ -20,8 +20,12 @@
       "config": {
         "branch": {
           "apiKey": "key_live_f9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8"
+        },
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.1043059090718-uct4llkt07r49b9rd9a5fsq52pbrt8ft"
         }
-      }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -33,7 +37,8 @@
           "apiKey": "key_live_f9f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8f8"
         }
       },
-      "package": "com.bacon.app"
+      "package": "com.bacon.app",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

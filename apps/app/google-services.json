@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1043059090718",
+    "project_id": "signin-demo-bf120",
+    "storage_bucket": "signin-demo-bf120.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043059090718:android:a8aa47b47ee8e7c4a1550f",
+        "android_client_info": {
+          "package_name": "com.bacon.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043059090718-hn1pbcc4thfdtlf62i78tcj6etjm1vpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8xG7YFM_RVxcp1-ygr_q0eN07M1sa-uE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043059090718-hn1pbcc4thfdtlf62i78tcj6etjm1vpt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1043059090718-uct4llkt07r49b9rd9a5fsq52pbrt8ft.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.bacon.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

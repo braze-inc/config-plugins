@@ -1,14 +1,25 @@
-import { ConfigPlugin, createRunOncePlugin } from "@expo/config-plugins";
+import {
+  ConfigPlugin,
+  AndroidConfig,
+  IOSConfig,
+  createRunOncePlugin,
+  withPlugins,
+} from "@expo/config-plugins";
 
 /**
  * Apply google-signin configuration for Expo SDK 42 projects.
  */
-const withGoogleSignin: ConfigPlugin<{} | void> = (config, _props = {}) => {
-  // Support passing no props to the plugin.
-  const props = _props || {};
+const withGoogleSignin: ConfigPlugin = (config) => {
+  return withPlugins(config, [
+    // Android
+    AndroidConfig.GoogleServices.withClassPath,
+    AndroidConfig.GoogleServices.withApplyPlugin,
+    AndroidConfig.GoogleServices.withGoogleServicesFile,
 
-  // Return the modified config.
-  return config;
+    // iOS
+    IOSConfig.Google.withGoogle,
+    IOSConfig.Google.withGoogleServicesFile,
+  ]);
 };
 
 const pkg = {

@@ -5,6 +5,9 @@
   "main": "build/withGoogleSignin.js",
   "types": "build/withGoogleSignin.d.ts",
   "sideEffects": false,
+  "author": "650 Industries, Inc.",
+  "license": "MIT",
+  "homepage": "https://docs.expo.dev/versions/latest/sdk/branch/",
   "repository": {
     "type": "git",
     "url": "https://github.com/expo/config-plugins.git",
